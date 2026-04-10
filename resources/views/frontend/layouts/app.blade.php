@@ -1,17 +1,97 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="{{ $settings->description ?? 'Company Profile' }}">
+    @if($settings->meta_keywords ?? false)
+        <meta name="keywords" content="{{ $settings->meta_keywords }}">
+    @endif
     <title>@yield('title', $settings->company_name ?? config('app.name'))</title>
+    <link rel="canonical" href="{{ url()->current() }}">
+    @yield('schema')
 
     @if($settings->favicon_url ?? false)
-        <link rel="icon" href="{{ $settings->favicon_url }}" type="image/x-icon">
+        <link rel="icon" href="{{ asset($settings->favicon_url) }}" type="image/x-icon">
     @endif
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <!-- Google Analytics -->
+    @if($settings->google_analytics_id ?? false)
+        <script async src="https://www.googletagmanager.com/gtag/js?id={{ $settings->google_analytics_id }}"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', '{{ $settings->google_analytics_id }}');
+        </script>
+    @endif
+
+    <!-- Custom Header Scripts -->
+    {!! $settings->header_scripts ?? '' !!}
+
+    <!-- SEO & Social Media Meta Tags -->
+    <meta property="og:title" content="@yield('title', $settings->company_name ?? config('app.name'))">
+    <meta property="og:description" content="{{ $settings->description ?? 'Digital Creator - Professional Company Profile' }}">
+    <meta property="og:image" content="{{ $settings->logo_url }}">
+    <meta property="og:url" content="{{ url()->current() }}">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="{{ $settings->company_name ?? config('app.name') }}">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="@yield('title', $settings->company_name ?? config('app.name'))">
+    <meta name="twitter:description" content="{{ $settings->description ?? 'Digital Creator - Professional Company Profile' }}">
+    <meta name="twitter:image" content="{{ $settings->logo_url }}">
+
+    <style>
+        :root {
+            @if($settings->primary_color)
+                --color-primary-500: {{ $settings->primary_color }};
+                --color-primary-400: color-mix(in srgb, {{ $settings->primary_color }}, white 20%);
+                --color-primary-600: color-mix(in srgb, {{ $settings->primary_color }}, black 20%);
+            @endif
+
+            @if($settings->accent_color)
+                --color-accent-500: {{ $settings->accent_color }};
+                --color-accent-400: color-mix(in srgb, {{ $settings->accent_color }}, white 20%);
+                --color-accent-600: color-mix(in srgb, {{ $settings->accent_color }}, black 20%);
+            @endif
+
+            /* Secondary color */
+            @if($settings->secondary_color)
+                --color-secondary-500: {{ $settings->secondary_color }};
+            @endif
+
+            @if($settings->bg_color)
+                --color-dark-900: {{ $settings->bg_color }};
+            @endif
+
+            @if($settings->text_color)
+                --color-text-main: {{ $settings->text_color }};
+            @endif
+
+            @if($settings->card_color)
+                --color-card-base: {{ $settings->card_color }};
+            @endif
+        }
+
+        body {
+            color: var(--color-text-main, white) !important;
+        }
+
+        .glass {
+            background: color-mix(in srgb, var(--color-card-base, white), transparent 92%) !important;
+            backdrop-filter: blur(16px) saturate(180%) !important;
+            border: 1px solid color-mix(in srgb, var(--color-card-base, white), transparent 85%) !important;
+        }
+
+        .glass-dark {
+            background: color-mix(in srgb, var(--color-dark-900, #0f0f23), transparent 20%) !important;
+            backdrop-filter: blur(20px) !important;
+        }
+    </style>
 </head>
 
 <body class="min-h-screen flex flex-col overflow-x-hidden" style="background-color: #0f0f23;">
@@ -22,8 +102,8 @@
                 <!-- Logo -->
                 <a href="{{ route('home') }}" class="flex items-center gap-2 sm:gap-3 min-w-0 flex-shrink">
                     @if($settings->logo_url ?? false)
-                        <img src="{{ $settings->logo_url }}" alt="{{ $settings->company_name }}"
-                            class="h-8 sm:h-10 flex-shrink-0">
+                        <img src="{{ asset($settings->logo_url) }}" alt="{{ $settings->company_name }}"
+                             class="h-8 sm:h-10 flex-shrink-0">
                     @else
                         <div
                             class="w-8 h-8 sm:w-10 sm:h-10 rounded-xl gradient-primary flex items-center justify-center flex-shrink-0">
@@ -101,7 +181,7 @@
                 <div class="md:col-span-2">
                     <div class="flex items-center gap-3 mb-4">
                         @if($settings->logo_url ?? false)
-                            <img src="{{ $settings->logo_url }}" alt="{{ $settings->company_name }}" class="h-8">
+                            <img src="{{ asset($settings->logo_url) }}" alt="{{ $settings->company_name }}" class="h-8">
                         @endif
                         <span class="text-white font-bold text-xl">{{ $settings->company_name ?? 'Company' }}</span>
                     </div>
@@ -215,6 +295,9 @@
             display: none !important;
         }
     </style>
+    <!-- Custom Footer Scripts -->
+    {!! $settings->footer_scripts ?? '' !!}
 </body>
 
 </html>
+>

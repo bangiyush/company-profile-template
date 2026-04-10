@@ -11,6 +11,7 @@ use App\Models\Portfolio;
 use App\Models\Service;
 use App\Models\TeamMember;
 use App\Models\Testimonial;
+use App\Models\ClientLogo;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
@@ -33,6 +34,7 @@ class PageController extends Controller
             'about' => AboutSection::active()->first(),
             'testimonials' => Testimonial::active()->featured()->ordered()->take(3)->get(),
             'portfolios' => Portfolio::active()->featured()->ordered()->take(6)->get(),
+            'clientLogos' => ClientLogo::active()->orderBy('sort_order')->get(),
         ]);
 
         return view('frontend.home', $data);
@@ -76,6 +78,26 @@ class PageController extends Controller
         return view('frontend.portfolio', $data);
     }
 
+    public function portfolioDetail(Portfolio $portfolio)
+    {
+        // Ensure the portfolio is active
+        if (!$portfolio->is_active) {
+            abort(404);
+        }
+        
+        $data = array_merge($this->getCommonData(), [
+            'portfolio' => $portfolio,
+            // Related portfolios (from same category)
+            'related' => Portfolio::active()
+                ->where('category', $portfolio->category)
+                ->where('id', '!=', $portfolio->id)
+                ->take(3)
+                ->get(),
+        ]);
+
+        return view('frontend.portfolio-detail', $data);
+    }
+
     public function testimonials()
     {
         $data = array_merge($this->getCommonData(), [
@@ -92,6 +114,11 @@ class PageController extends Controller
 
     public function sendMessage(Request $request)
     {
+        // Simple Honeypot Check
+        if ($request->filled('website_url')) {
+            return back()->with('success', 'Thank you for your message! We will get back to you soon.');
+        }
+
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255',

@@ -27,9 +27,15 @@
                 </div>
 
                 <div>
-                    <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description" rows="3"
+                    <label for="description" class="form-label">Short Description</label>
+                    <textarea id="description" name="description" rows="2"
                         class="form-input">{{ old('description', $portfolio->description ?? '') }}</textarea>
+                </div>
+
+                <div>
+                    <label for="long_content" class="form-label">Case Study / Project Details</label>
+                    <textarea id="long_content" name="long_content" rows="10"
+                        class="form-input" placeholder="Explain the challenges, solutions, and results of this project...">{{ old('long_content', $portfolio->long_content ?? '') }}</textarea>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">

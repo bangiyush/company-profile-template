@@ -105,7 +105,7 @@
                     </div>
                     <span class="text-white/80 text-sm">Add Portfolio</span>
                 </a>
-                <a href="{{ route('admin.settings.edit') }}"
+                <a href="{{ route('admin.settings.general') }}"
                     class="flex items-center gap-3 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors group">
                     <div
                         class="w-10 h-10 rounded-lg bg-accent-500/20 flex items-center justify-center group-hover:bg-accent-500/30 transition-colors">

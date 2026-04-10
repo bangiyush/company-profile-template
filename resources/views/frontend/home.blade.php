@@ -2,6 +2,33 @@
 
 @section('title', $settings->company_name ?? 'Home')
 
+@section('schema')
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  "name": "{{ $settings->company_name }}",
+  "image": "{{ $settings->logo_url }}",
+  "@id": "{{ route('home') }}",
+  "url": "{{ route('home') }}",
+  "telephone": "{{ $settings->phone }}",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "{{ $settings->address }}",
+    "addressLocality": "Indonesia",
+    "addressCountry": "ID"
+  },
+  "sameAs": [
+    "{{ $settings->facebook }}",
+    "{{ $settings->twitter }}",
+    "{{ $settings->instagram }}",
+    "{{ $settings->linkedin }}",
+    "{{ $settings->youtube }}"
+  ]
+}
+</script>
+@endsection
+
 @section('content')
 <!-- Hero Section -->
 <section class="min-h-screen flex items-center relative overflow-hidden">
@@ -31,12 +58,12 @@
                 
                 <div class="flex flex-wrap gap-4">
                     @if($hero->button_text ?? false)
-                        <a href="{{ $hero->button_link ?? '#' }}" class="px-8 py-4 rounded-xl gradient-primary text-white font-semibold hover:shadow-lg hover:shadow-primary-500/30 transform hover:-translate-y-1 transition-all duration-300">
+                        <a href="{{ url($hero->button_link ?? '#') }}" class="px-8 py-4 rounded-xl gradient-primary text-white font-semibold hover:shadow-lg hover:shadow-primary-500/30 transform hover:-translate-y-1 transition-all duration-300">
                             {{ $hero->button_text }}
                         </a>
                     @endif
                     @if($hero->button_text_secondary ?? false)
-                        <a href="{{ $hero->button_link_secondary ?? '#' }}" class="px-8 py-4 rounded-xl glass text-white font-semibold hover:bg-white/20 transition-all duration-300">
+                        <a href="{{ url($hero->button_link_secondary ?? '#') }}" class="px-8 py-4 rounded-xl glass text-white font-semibold hover:bg-white/20 transition-all duration-300">
                             {{ $hero->button_text_secondary }}
                         </a>
                     @endif
@@ -174,7 +201,7 @@
         
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             @foreach($portfolios as $index => $portfolio)
-                <div class="group relative overflow-hidden rounded-2xl" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
+                <a href="{{ route('portfolio.detail', $portfolio) }}" class="group relative overflow-hidden rounded-2xl block" data-aos="fade-up" data-aos-delay="{{ $index * 100 }}">
                     @if($portfolio->image_url)
                         <img src="{{ $portfolio->image_url }}" alt="{{ $portfolio->title }}" class="w-full h-72 object-cover transition-transform duration-500 group-hover:scale-110">
                     @else
@@ -188,7 +215,7 @@
                             <h3 class="text-xl font-semibold text-white">{{ $portfolio->title }}</h3>
                         </div>
                     </div>
-                </div>
+                </a>
             @endforeach
         </div>
         
@@ -247,6 +274,9 @@
     </div>
 </section>
 @endif
+
+<!-- Trusted By Section (Marquee) -->
+@include('frontend.partials.clients')
 
 <!-- CTA Section -->
 <section class="py-24">

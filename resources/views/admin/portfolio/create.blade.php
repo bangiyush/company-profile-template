@@ -19,10 +19,48 @@
                 </div>
 
                 <div>
-                    <label for="description" class="form-label">Description</label>
-                    <textarea id="description" name="description" rows="3"
+                    <label for="slug" class="form-label">Slug (SEO URL) <span class="text-xs text-white/40 ml-2">(Auto-generated if empty)</span></label>
+                    <input type="text" id="slug" name="slug" value="{{ old('slug', $portfolio->slug ?? '') }}"
+                        class="form-input" placeholder="project-name-example">
+                    <p class="text-xs text-white/40 mt-1">This will be used for the URL: {{ url('/portfolio/') }}/<span id="slug-preview">@isset($portfolio){{ $portfolio->slug }}@else... @endisset</span></p>
+                </div>
+
+                <div>
+                    <label for="description" class="form-label">Description (Short)</label>
+                    <textarea id="description" name="description" rows="2"
                         class="form-input">{{ old('description', $portfolio->description ?? '') }}</textarea>
                 </div>
+
+                @push('scripts')
+                <script>
+                    const titleInput = document.getElementById('title');
+                    const slugInput = document.getElementById('slug');
+                    const slugPreview = document.getElementById('slug-preview');
+
+                    const slugify = (text) => {
+                        return text.toString().toLowerCase()
+                            .replace(/\s+/g, '-')           // Replace spaces with -
+                            .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+                            .replace(/\-\-+/g, '-')         // Replace multiple - with single -
+                            .replace(/^-+/, '')             // Trim - from start of text
+                            .replace(/-+$/, '');            // Trim - from end of text
+                    };
+
+                    titleInput.addEventListener('input', () => {
+                        if (!slugInput.value || slugInput.getAttribute('data-auto') === 'true') {
+                            const slug = slugify(titleInput.value);
+                            slugInput.value = slug;
+                            slugPreview.innerText = slug;
+                            slugInput.setAttribute('data-auto', 'true');
+                        }
+                    });
+
+                    slugInput.addEventListener('input', () => {
+                        slugInput.setAttribute('data-auto', 'false');
+                        slugPreview.innerText = slugify(slugInput.value);
+                    });
+                </script>
+                @endpush
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>

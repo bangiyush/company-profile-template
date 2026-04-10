@@ -25,7 +25,9 @@ class PortfolioController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:portfolios,slug',
             'description' => 'nullable|string',
+            'long_content' => 'nullable|string',
             'client_name' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:100',
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -58,7 +60,9 @@ class PortfolioController extends Controller
     {
         $validated = $request->validate([
             'title' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:portfolios,slug,' . $portfolio->id,
             'description' => 'nullable|string',
+            'long_content' => 'nullable|string',
             'client_name' => 'nullable|string|max:255',
             'category' => 'nullable|string|max:100',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',

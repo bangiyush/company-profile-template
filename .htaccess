@@ -1,0 +1,5 @@
+# Menghapus redirect otomatis karena akses dilakukan langsung lewat folder /public
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    # Tidak ada rule redirect di sini untuk menghindari loop
+</IfModule>

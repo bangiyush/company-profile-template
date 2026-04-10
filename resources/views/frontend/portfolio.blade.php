@@ -41,12 +41,12 @@
             <!-- Portfolio Grid -->
             <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @forelse($portfolios as $index => $portfolio)
-                    <div x-show="activeCategory === 'all' || activeCategory === '{{ $portfolio->category }}'"
+                    <a href="{{ route('portfolio.detail', $portfolio) }}" x-show="activeCategory === 'all' || activeCategory === '{{ $portfolio->category }}'"
                         x-transition:enter="transition ease-out duration-300"
                         x-transition:enter-start="opacity-0 transform scale-95"
-                        x-transition:enter-end="opacity-100 transform scale-100" class="group" data-aos="fade-up"
+                        x-transition:enter-end="opacity-100 transform scale-100" class="group block" data-aos="fade-up"
                         data-aos-delay="{{ ($index % 3) * 100 }}">
-                        <div class="glass rounded-2xl overflow-hidden hover-lift">
+                        <div class="glass rounded-2xl overflow-hidden hover-lift h-full">
                             <div class="relative overflow-hidden">
                                 @if($portfolio->image_url)
                                     <img src="{{ $portfolio->image_url }}" alt="{{ $portfolio->title }}"
@@ -61,15 +61,12 @@
                                     </div>
                                 @endif
 
-                                @if($portfolio->project_url)
-                                    <div
-                                        class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
-                                        <a href="{{ $portfolio->project_url }}" target="_blank"
-                                            class="px-6 py-2 rounded-full gradient-primary text-white text-sm font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                                            View Project
-                                        </a>
-                                    </div>
-                                @endif
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-t from-dark-900 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-6">
+                                    <span class="px-6 py-2 rounded-full gradient-primary text-white text-sm font-medium transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
+                                        View Case Study
+                                    </span>
+                                </div>
                             </div>
 
                             <div class="p-6">
@@ -80,12 +77,9 @@
                                 @if($portfolio->description)
                                     <p class="text-white/60 text-sm line-clamp-2">{{ $portfolio->description }}</p>
                                 @endif
-                                @if($portfolio->client_name)
-                                    <p class="text-white/40 text-sm mt-3">Client: {{ $portfolio->client_name }}</p>
-                                @endif
                             </div>
                         </div>
-                    </div>
+                    </a>
                 @empty
                     <div class="col-span-full text-center py-12">
                         <p class="text-white/50">No portfolio items to display.</p>

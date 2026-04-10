@@ -8,7 +8,9 @@ class Portfolio extends Model
 {
     protected $fillable = [
         'title',
+        'slug',
         'description',
+        'long_content',
         'client_name',
         'category',
         'image',
@@ -19,6 +21,23 @@ class Portfolio extends Model
         'is_featured',
         'is_active',
     ];
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    protected static function booted()
+    {
+        static::saving(function ($portfolio) {
+            if ($portfolio->isDirty('title') && empty($portfolio->slug)) {
+                $portfolio->slug = \Illuminate\Support\Str::slug($portfolio->title);
+            }
+        });
+    }
 
     protected $casts = [
         'gallery' => 'array',

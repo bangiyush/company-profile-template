@@ -10,6 +10,7 @@ class CompanySetting extends Model
         'company_name',
         'tagline',
         'description',
+        'meta_keywords',
         'logo',
         'favicon',
         'email',
@@ -21,6 +22,15 @@ class CompanySetting extends Model
         'linkedin',
         'youtube',
         'whatsapp',
+        'google_analytics_id',
+        'header_scripts',
+        'footer_scripts',
+        'primary_color',
+        'secondary_color',
+        'accent_color',
+        'bg_color',
+        'text_color',
+        'card_color',
     ];
 
     /**

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AboutController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ClientLogoController;
 use App\Http\Controllers\Admin\ContactMessageController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\HeroController;
@@ -25,6 +26,7 @@ Route::controller(PageController::class)->group(function () {
     Route::get('/services', 'services')->name('services');
     Route::get('/team', 'team')->name('team');
     Route::get('/portfolio', 'portfolio')->name('portfolio');
+    Route::get('/portfolio/{portfolio}', 'portfolioDetail')->name('portfolio.detail');
     Route::get('/testimonials', 'testimonials')->name('testimonials');
     Route::get('/contact', 'contact')->name('contact');
     Route::post('/contact', 'sendMessage')->name('contact.send');
@@ -47,10 +49,18 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    // Settings
-    Route::get('/settings', [SettingsController::class, 'edit'])->name('settings.edit');
-    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
-    Route::post('/settings/delete-image/{field}', [SettingsController::class, 'deleteImage'])->name('settings.delete-image');
+    // Settings Group
+    Route::prefix('settings')->name('settings.')->group(function () {
+        Route::get('/general', [SettingsController::class, 'edit'])->name('general');
+        Route::get('/seo', [SettingsController::class, 'seo'])->name('seo');
+        Route::get('/integrations', [SettingsController::class, 'integrations'])->name('integrations');
+        Route::put('/update/{type}', [SettingsController::class, 'update'])->name('update');
+        Route::post('/delete-image/{field}', [SettingsController::class, 'deleteImage'])->name('delete-image');
+    });
+
+    // Client Logos
+    Route::resource('client-logos', ClientLogoController::class)->except(['show', 'edit', 'update']);
+    Route::patch('client-logos/{clientLogo}/toggle', [ClientLogoController::class, 'toggleStatus'])->name('client-logos.toggle');
 
     // Hero Section
     Route::get('/hero', [HeroController::class, 'edit'])->name('hero.edit');
@@ -84,3 +94,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::post('/messages/{message}/replied', [ContactMessageController::class, 'markAsReplied'])->name('messages.replied');
     Route::delete('/messages/{message}', [ContactMessageController::class, 'destroy'])->name('messages.destroy');
 });
+
+// SEO Routes
+Route::get('/sitemap.xml', [\App\Http\Controllers\Frontend\SitemapController::class, 'index'])->name('sitemap');
+Route::get('/robots.txt', [\App\Http\Controllers\Frontend\SitemapController::class, 'robots'])->name('robots');
+

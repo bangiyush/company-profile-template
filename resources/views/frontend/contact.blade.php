@@ -134,6 +134,11 @@
 
                         <form method="POST" action="{{ route('contact.send') }}" class="space-y-6">
                             @csrf
+                            
+                            {{-- Honeypot field (hidden from users) --}}
+                            <div class="hidden" aria-hidden="true">
+                                <input type="text" name="website_url" tabindex="-1" autocomplete="off">
+                            </div>
 
                             <div class="grid md:grid-cols-2 gap-6">
                                 <div>

@@ -8,6 +8,7 @@ class Service extends Model
 {
     protected $fillable = [
         'title',
+        'slug',
         'description',
         'icon',
         'image',
@@ -16,6 +17,23 @@ class Service extends Model
         'is_featured',
         'is_active',
     ];
+
+    /**
+     * Get the route key for the model.
+     */
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
+    protected static function booted()
+    {
+        static::saving(function ($service) {
+            if ($service->isDirty('title') && empty($service->slug)) {
+                $service->slug = \Illuminate\Support\Str::slug($service->title);
+            }
+        });
+    }
 
     protected $casts = [
         'features' => 'array',
